@@ -1,6 +1,9 @@
 name: CI
 
-on: [release]
+#on: [release]
+on:
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -19,10 +22,10 @@ jobs:
         
         echo "Handling release tag $tag_name"
         for asset64 in "${assets[@]}"
-        do
-          asset=$(base64 --decode <<< "${asset64}")
-          asset_id=$(jq -r '.id' <<< "${asset}")
-          name=$(jq -r '.name' <<< "${asset}")
-            echo "Downloading ${name} to the temporary directory"
-        done
+          do
+            asset=$(base64 --decode <<< "${asset64}")
+            asset_id=$(jq -r '.id' <<< "${asset}")
+            name=$(jq -r '.name' <<< "${asset}")
+              echo "Downloading ${name} to the temporary directory"
+          done
         echo Parsing done.
