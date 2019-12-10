@@ -8,11 +8,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    #- uses: actions/checkout@v1
     - name: Run a one-line script
       run: echo Hello, world!
     - name: Run a multi-line script
       run: |
         echo Parsing assets:
         assets=( $(jq -r '.release.assets[] | @base64' "$GITHUB_EVENT_PATH") )
+        tag_name=$(jq -r .release.tag_name "$GITHUB_EVENT_PATH")
+        
+        echo "Handling release tag $tag_name"
+        for asset64 in "${assets[@]}"
+        do
+          asset=$(base64 --decode <<< "${asset64}")
+          asset_id=$(jq -r '.id' <<< "${asset}")
+          name=$(jq -r '.name' <<< "${asset}")
+            echo "Downloading ${name} to the temporary directory"
+        done
         echo Parsing done.
